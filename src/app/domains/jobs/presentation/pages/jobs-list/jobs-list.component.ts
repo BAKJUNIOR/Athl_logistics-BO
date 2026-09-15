@@ -13,7 +13,6 @@ import { DropdownItemComponent } from '../../../../../shared/ui/dropdown/dropdow
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { JobApi } from '../../../infrastructure/api/job.api';
 import { JobDomainApi } from '../../../infrastructure/api/job-domain.api';
-import { MOCK_JOBS } from '../../../infrastructure/data/job.mock';
 import {
   JobDomainOption,
   JobOffer,
@@ -60,8 +59,6 @@ export class JobsListComponent {
   jobs = signal<JobOffer[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  // true quand la liste affichée est MOCK_JOBS (API indisponible) plutôt que de vraies données.
-  usingMockData = signal(false);
 
   search = signal('');
   domainFilter = signal('');
@@ -127,17 +124,13 @@ export class JobsListComponent {
   loadJobs(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.usingMockData.set(false);
     this.jobApi.list().subscribe({
       next: (list) => {
         this.jobs.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        // L'API n'existe pas encore côté backend : on affiche des exemples pour
-        // prévisualiser la liste plutôt qu'un simple message d'erreur.
-        this.jobs.set(MOCK_JOBS);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des offres.'));
         this.loading.set(false);
       },
     });

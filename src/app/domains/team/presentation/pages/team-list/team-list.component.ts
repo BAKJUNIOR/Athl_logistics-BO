@@ -7,7 +7,6 @@ import { ModalComponent } from '../../../../../shared/ui/modal/modal.component';
 import { LabelComponent } from '../../../../dashboard/presentation/components/form/label/label.component';
 import { InputFieldComponent } from '../../../../dashboard/presentation/components/form/input/input-field.component';
 import { TeamApi } from '../../../infrastructure/api/team.api';
-import { MOCK_TEAM } from '../../../infrastructure/data/team.mock';
 import { CloudinaryUploadService } from '../../../../../core/services/cloudinary-upload.service';
 import { TeamMember, TeamMemberUpsertRequest, emptyTeamMemberForm } from '../../../domain/entities/team-member.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
@@ -33,7 +32,7 @@ export class TeamListComponent {
 
   members = signal<TeamMember[]>([]);
   loading = signal(true);
-  usingMockData = signal(false);
+  error = signal<string | null>(null);
 
   sortedMembers = computed(() => [...this.members()].sort((a, b) => a.sortOrder - b.sortOrder));
 
@@ -56,15 +55,14 @@ export class TeamListComponent {
 
   loadMembers(): void {
     this.loading.set(true);
-    this.usingMockData.set(false);
+    this.error.set(null);
     this.teamApi.list().subscribe({
       next: (list) => {
         this.members.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        this.members.set(MOCK_TEAM);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, "Erreur lors du chargement de l'équipe."));
         this.loading.set(false);
       },
     });
