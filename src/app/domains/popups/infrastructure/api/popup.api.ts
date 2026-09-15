@@ -4,11 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { Popup, PopupUpsertRequest } from '../../domain/entities/popup.entity';
 
-/**
- * Endpoints réservés ADMIN — pas encore implémentés côté backend (voir le commentaire
- * dans environment.ts). Cette classe pose le contrat attendu par le BO pour que
- * l'intégration se limite à brancher le backend une fois prêt, sans retoucher le front.
- */
+/** `list`/`getById` sont publics côté backend (filtrés sur les popups actives pour un appelant anonyme), le reste est réservé ADMIN. */
 @Injectable({ providedIn: 'root' })
 export class PopupApi {
   private readonly http = inject(HttpClient);

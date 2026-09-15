@@ -31,7 +31,7 @@ export class SiteSettingsPageComponent {
   private readonly toast = inject(ToastService);
 
   loading = signal(true);
-  usingMockData = signal(false);
+  error = signal<string | null>(null);
   saving = signal(false);
 
   stats = signal<HomeStat[]>(HOME_STAT_DEFAULTS);
@@ -43,7 +43,7 @@ export class SiteSettingsPageComponent {
 
   load(): void {
     this.loading.set(true);
-    this.usingMockData.set(false);
+    this.error.set(null);
     forkJoin({
       stats: this.homeStatsApi.list(),
       contact: this.siteContactApi.get(),
@@ -53,10 +53,8 @@ export class SiteSettingsPageComponent {
         this.contact.set(contact ?? SITE_CONTACT_DEFAULTS);
         this.loading.set(false);
       },
-      error: () => {
-        this.stats.set(HOME_STAT_DEFAULTS);
-        this.contact.set(SITE_CONTACT_DEFAULTS);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des paramètres.'));
         this.loading.set(false);
       },
     });

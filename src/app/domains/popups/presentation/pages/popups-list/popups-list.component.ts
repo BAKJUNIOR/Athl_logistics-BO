@@ -12,7 +12,6 @@ import { DropdownComponent } from '../../../../../shared/ui/dropdown/dropdown.co
 import { DropdownItemComponent } from '../../../../../shared/ui/dropdown/dropdown-item/dropdown-item.component';
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { PopupApi } from '../../../infrastructure/api/popup.api';
-import { MOCK_POPUPS } from '../../../infrastructure/data/popup.mock';
 import { Popup, POPUP_PAGE_OPTIONS, popupPageLabel, popupTypeLabel } from '../../../domain/entities/popup.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
@@ -53,8 +52,6 @@ export class PopupsListComponent {
   popups = signal<Popup[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  // true quand la liste affichée est MOCK_POPUPS (API indisponible) plutôt que de vraies données.
-  usingMockData = signal(false);
 
   search = signal('');
   pageFilter = signal('');
@@ -118,17 +115,13 @@ export class PopupsListComponent {
   loadPopups(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.usingMockData.set(false);
     this.popupApi.list().subscribe({
       next: (list) => {
         this.popups.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        // L'API n'existe pas encore côté backend : on affiche des exemples pour
-        // prévisualiser la liste plutôt qu'un simple message d'erreur.
-        this.popups.set(MOCK_POPUPS);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des popups.'));
         this.loading.set(false);
       },
     });
