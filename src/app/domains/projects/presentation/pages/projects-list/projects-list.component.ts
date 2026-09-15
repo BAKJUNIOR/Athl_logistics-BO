@@ -14,7 +14,6 @@ import { InputFieldComponent } from '../../../../dashboard/presentation/componen
 import { SwitchComponent } from '../../../../dashboard/presentation/components/form/input/switch.component';
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { ProjectApi } from '../../../infrastructure/api/project.api';
-import { MOCK_PROJECTS } from '../../../infrastructure/data/project.mock';
 import { CloudinaryUploadService } from '../../../../../core/services/cloudinary-upload.service';
 import { Project, ProjectUpsertRequest, emptyProjectForm, projectStatusLabel } from '../../../domain/entities/project.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
@@ -57,7 +56,7 @@ export class ProjectsListComponent {
 
   projects = signal<Project[]>([]);
   loading = signal(true);
-  usingMockData = signal(false);
+  error = signal<string | null>(null);
 
   search = signal('');
   statusFilter = signal<'' | 'draft' | 'published'>('');
@@ -102,15 +101,14 @@ export class ProjectsListComponent {
 
   loadProjects(): void {
     this.loading.set(true);
-    this.usingMockData.set(false);
+    this.error.set(null);
     this.projectApi.list().subscribe({
       next: (list) => {
         this.projects.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        this.projects.set(MOCK_PROJECTS);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des projets.'));
         this.loading.set(false);
       },
     });
