@@ -8,7 +8,7 @@ import { JobOffer } from '../../domain/entities/job-offer.entity';
 export const MOCK_JOBS: JobOffer[] = [
   {
     id: 1,
-    domain: 'chantier',
+    domain: { id: 1, labelFr: 'Chantier', labelEn: 'Construction site' },
     titleFr: 'Maçons, coffreurs, ferrailleurs',
     titleEn: 'Masons, formworkers, rebar workers',
     descriptionFr: "Nous recherchons des profils expérimentés pour renforcer nos équipes gros œuvre sur plusieurs chantiers.",
@@ -32,7 +32,7 @@ export const MOCK_JOBS: JobOffer[] = [
   },
   {
     id: 2,
-    domain: 'logistique',
+    domain: { id: 4, labelFr: 'Logistique', labelEn: 'Logistics' },
     titleFr: 'Agents logistique & import',
     titleEn: 'Logistics & import agents',
     descriptionFr: "Rejoignez notre pôle logistique pour la gestion des flux d'importation de matériaux.",
@@ -55,7 +55,7 @@ export const MOCK_JOBS: JobOffer[] = [
   },
   {
     id: 3,
-    domain: 'mobilite',
+    domain: { id: 3, labelFr: 'Mobilité', labelEn: 'Mobility' },
     titleFr: 'Chauffeurs VTC',
     titleEn: 'Ride-hailing drivers',
     descriptionFr: 'Nous recrutons des chauffeurs professionnels pour notre service de mobilité.',
@@ -77,7 +77,7 @@ export const MOCK_JOBS: JobOffer[] = [
   },
   {
     id: 4,
-    domain: 'support',
+    domain: { id: 5, labelFr: 'Support', labelEn: 'Support' },
     titleFr: 'Assistant(e) administratif(ve)',
     titleEn: 'Administrative assistant',
     descriptionFr: "Support administratif transverse pour les équipes chantier et siège.",

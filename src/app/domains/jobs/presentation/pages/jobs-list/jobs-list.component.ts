@@ -12,12 +12,12 @@ import { DropdownComponent } from '../../../../../shared/ui/dropdown/dropdown.co
 import { DropdownItemComponent } from '../../../../../shared/ui/dropdown/dropdown-item/dropdown-item.component';
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { JobApi } from '../../../infrastructure/api/job.api';
+import { JobDomainApi } from '../../../infrastructure/api/job-domain.api';
 import { MOCK_JOBS } from '../../../infrastructure/data/job.mock';
 import {
-  JOB_DOMAINS,
+  JobDomainOption,
   JobOffer,
   deadlineStatus,
-  jobDomainLabel,
   jobStatusLabel,
 } from '../../../domain/entities/job-offer.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
@@ -53,6 +53,7 @@ interface ConfirmState {
 })
 export class JobsListComponent {
   private readonly jobApi = inject(JobApi);
+  private readonly jobDomainApi = inject(JobDomainApi);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
@@ -70,10 +71,11 @@ export class JobsListComponent {
   // qu'à partir de 2 (un seul filtre actif se voit déjà à la couleur du bouton).
   readonly activeFilterCount = computed(() => [this.domainFilter(), this.statusFilter()].filter(Boolean).length);
 
-  readonly domainFilterOptions: Option[] = [
+  domains = signal<JobDomainOption[]>([]);
+  readonly domainFilterOptions = computed((): Option[] => [
     { value: '', label: 'Tous les domaines' },
-    ...JOB_DOMAINS.map((d) => ({ value: d, label: jobDomainLabel(d) })),
-  ];
+    ...this.domains().map((d) => ({ value: String(d.id), label: d.labelFr })),
+  ]);
 
   readonly statusFilterOptions: Option[] = [
     { value: '', label: 'Tous les statuts' },
@@ -88,7 +90,7 @@ export class JobsListComponent {
 
     return this.jobs().filter((j) => {
       const matchesQuery = !q || j.titleFr.toLowerCase().includes(q);
-      const matchesDomain = !domain || j.domain === domain;
+      const matchesDomain = !domain || String(j.domain.id) === domain;
       const matchesStatus = !status || j.status === status;
       return matchesQuery && matchesDomain && matchesStatus;
     });
@@ -104,7 +106,6 @@ export class JobsListComponent {
     };
   });
 
-  domainLabel = jobDomainLabel;
   statusLabel = jobStatusLabel;
   deadlineStatus = deadlineStatus;
 
@@ -117,6 +118,10 @@ export class JobsListComponent {
 
   constructor() {
     this.loadJobs();
+    this.jobDomainApi.list().subscribe({
+      next: (list) => this.domains.set(list ?? []),
+      error: () => this.domains.set([]),
+    });
   }
 
   loadJobs(): void {

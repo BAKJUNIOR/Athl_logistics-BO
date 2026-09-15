@@ -39,6 +39,11 @@ export const environment = {
       unpublish: (jobId: number | string) => `api/v1/jobs/${jobId}/unpublish`,
       byId: (jobId: number | string) => `api/v1/jobs/${jobId}`,
     },
+    jobDomains: {
+      list: 'api/v1/job-domains',
+      create: 'api/v1/job-domains',
+      byId: (domainId: number | string) => `api/v1/job-domains/${domainId}`,
+    },
     quotes: {
       list: 'api/v1/quotes',
       updateStatus: (quoteId: number | string) => `api/v1/quotes/${quoteId}/status`,

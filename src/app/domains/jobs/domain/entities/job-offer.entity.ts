@@ -1,24 +1,7 @@
-/**
- * Reprend le `JobDomain` du front (domains/vitrine/domain/enum/job-domain.enum.ts) :
- * mêmes valeurs, mais les libellés vivent ici côté BO pour l'affichage admin.
- */
-export type JobDomain = 'chantier' | 'second-oeuvre' | 'mobilite' | 'logistique' | 'support';
-
-export const JOB_DOMAINS: JobDomain[] = ['chantier', 'second-oeuvre', 'mobilite', 'logistique', 'support'];
-
-export function jobDomainLabel(domain: JobDomain): string {
-  switch (domain) {
-    case 'chantier':
-      return 'Chantier';
-    case 'second-oeuvre':
-      return 'Second œuvre';
-    case 'mobilite':
-      return 'Mobilité';
-    case 'logistique':
-      return 'Logistique';
-    case 'support':
-      return 'Support';
-  }
+export interface JobDomainOption {
+  id: number;
+  labelFr: string;
+  labelEn: string;
 }
 
 export type JobStatus = 'draft' | 'published';
@@ -59,7 +42,7 @@ export interface JobBullet {
  */
 export interface JobOffer {
   id: number;
-  domain: JobDomain;
+  domain: JobDomainOption;
   titleFr: string;
   titleEn: string;
   descriptionFr: string;
@@ -75,7 +58,8 @@ export interface JobOffer {
   updatedAt: string;
 }
 
-export type JobUpsertRequest = Omit<JobOffer, 'id' | 'updatedAt'>;
+// domainId remplace domain (objet en lecture seule) dans le payload envoyé au backend.
+export type JobUpsertRequest = Omit<JobOffer, 'id' | 'updatedAt' | 'domain'> & { domainId: number };
 
 export function emptyBullet(): JobBullet {
   return { fr: '', en: '' };
@@ -84,7 +68,7 @@ export function emptyBullet(): JobBullet {
 export function emptyJobForm(): JobUpsertRequest {
   const today = new Date().toISOString().slice(0, 10);
   return {
-    domain: 'chantier',
+    domainId: 0,
     titleFr: '',
     titleEn: '',
     descriptionFr: '',

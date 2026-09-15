@@ -12,17 +12,19 @@ import { SwitchComponent } from '../../../../dashboard/presentation/components/f
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { DatePickerComponent } from '../../../../dashboard/presentation/components/form/date-picker/date-picker.component';
 import { JobApi } from '../../../infrastructure/api/job.api';
+import { JobDomainApi } from '../../../infrastructure/api/job-domain.api';
 import {
-  JOB_DOMAINS,
   JobBullet,
+  JobDomainOption,
   JobUpsertRequest,
   emptyBullet,
   emptyJobForm,
-  jobDomainLabel,
   jobStatusLabel,
 } from '../../../domain/entities/job-offer.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
+import { ModalComponent } from '../../../../../shared/ui/modal/modal.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-job-form',
@@ -39,6 +41,8 @@ import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util
     SwitchComponent,
     SelectComponent,
     DatePickerComponent,
+    ModalComponent,
+    FormsModule,
   ],
   templateUrl: './job-form.component.html',
 })
@@ -46,6 +50,7 @@ export class JobFormComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly jobApi = inject(JobApi);
+  private readonly jobDomainApi = inject(JobDomainApi);
   private readonly toast = inject(ToastService);
 
   readonly jobId = this.resolveId();
@@ -60,11 +65,24 @@ export class JobFormComponent {
 
   form = signal<JobUpsertRequest>(emptyJobForm());
 
-  readonly domainOptions: Option[] = JOB_DOMAINS.map((d) => ({ value: d, label: jobDomainLabel(d) }));
-  domainLabel = jobDomainLabel;
+  domains = signal<JobDomainOption[]>([]);
+  readonly domainOptions = () =>
+    this.domains().map((d): Option => ({ value: String(d.id), label: d.labelFr }));
+
+  domainModalOpen = signal(false);
+
+  domainDrafts = signal<Record<number, { labelFr: string; labelEn: string }>>({});
+  savingDomainId = signal<number | null>(null);
+  deletingDomainId = signal<number | null>(null);
+
+  newDomainLabelFr = signal('');
+  newDomainLabelEn = signal('');
+  savingNewDomain = signal(false);
+
   statusLabel = jobStatusLabel;
 
   constructor() {
+    this.loadDomains();
     if (this.isEdit) {
       this.loadJob();
     }
@@ -77,21 +95,28 @@ export class JobFormComponent {
     return Number.isFinite(id) ? id : null;
   }
 
+  private loadDomains(): void {
+    this.jobDomainApi.list().subscribe({
+      next: (list) => this.domains.set(list ?? []),
+      error: () => this.domains.set([]),
+    });
+  }
+
   private loadJob(): void {
     this.loading.set(true);
     this.loadError.set(null);
     this.jobApi.getById(this.jobId!).subscribe({
       next: (job) => {
-        const { id, updatedAt, ...rest } = job;
-        this.form.set(rest);
+        const { id, updatedAt, domain, ...rest } = job;
+        this.form.set({ ...rest, domainId: domain.id });
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
         this.loadError.set(
           extractApiErrorMessage(
             err,
-            "Impossible de charger cette offre : l'API backend correspondante n'existe pas encore."
-          )
+            "Impossible de charger cette offre : l'API backend correspondante n'existe pas encore.",
+          ),
         );
         this.loading.set(false);
       },
@@ -105,6 +130,104 @@ export class JobFormComponent {
 
   updateForm<K extends keyof JobUpsertRequest>(field: K, value: JobUpsertRequest[K]): void {
     this.form.update((f) => ({ ...f, [field]: value }));
+  }
+
+  onDomainChange(value: string): void {
+    this.updateForm('domainId', Number(value));
+  }
+
+  openDomainModal(): void {
+    this.domainDrafts.set(
+      Object.fromEntries(
+        this.domains().map((d) => [d.id, { labelFr: d.labelFr, labelEn: d.labelEn || '' }]),
+      ),
+    );
+    this.newDomainLabelFr.set('');
+    this.newDomainLabelEn.set('');
+    this.domainModalOpen.set(true);
+  }
+
+  closeDomainModal(): void {
+    this.domainModalOpen.set(false);
+  }
+
+  domainDraft(id: number): { labelFr: string; labelEn: string } {
+    return this.domainDrafts()[id] ?? { labelFr: '', labelEn: '' };
+  }
+
+  updateDomainDraft(id: number, field: 'labelFr' | 'labelEn', value: string): void {
+    this.domainDrafts.update((drafts) => ({
+      ...drafts,
+      [id]: { ...this.domainDraft(id), [field]: value },
+    }));
+  }
+
+  saveDomainEdit(domain: JobDomainOption): void {
+    const draft = this.domainDraft(domain.id);
+    if (!draft.labelFr.trim() || this.savingDomainId()) return;
+    this.savingDomainId.set(domain.id);
+    this.jobDomainApi
+      .update(domain.id, { labelFr: draft.labelFr.trim(), labelEn: draft.labelEn.trim() })
+      .subscribe({
+        next: (updated) => {
+          this.domains.update((list) => list.map((d) => (d.id === updated.id ? updated : d)));
+          this.savingDomainId.set(null);
+          this.toast.success(`Domaine « ${updated.labelFr} » mis à jour.`);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.savingDomainId.set(null);
+          this.toast.error(
+            extractApiErrorMessage(err, 'Erreur lors de la mise à jour du domaine.'),
+          );
+        },
+      });
+  }
+
+  deleteDomain(domain: JobDomainOption): void {
+    if (this.deletingDomainId()) return;
+    if (!confirm(`Supprimer le domaine « ${domain.labelFr} » ? Cette action est irréversible.`))
+      return;
+    this.deletingDomainId.set(domain.id);
+    this.jobDomainApi.delete(domain.id).subscribe({
+      next: () => {
+        this.domains.update((list) => list.filter((d) => d.id !== domain.id));
+        if (this.form().domainId === domain.id) {
+          this.updateForm('domainId', 0);
+        }
+        this.deletingDomainId.set(null);
+        this.toast.success(`Domaine « ${domain.labelFr} » supprimé.`);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.deletingDomainId.set(null);
+        this.toast.error(extractApiErrorMessage(err, 'Erreur lors de la suppression du domaine.'));
+      },
+    });
+  }
+
+  addDomain(): void {
+    const label = this.newDomainLabelFr().trim();
+    if (!label || this.savingNewDomain()) return;
+    this.savingNewDomain.set(true);
+    this.jobDomainApi
+      .create({ labelFr: label, labelEn: this.newDomainLabelEn().trim() })
+      .subscribe({
+        next: (created) => {
+          this.domains.update((list) => [...list, created]);
+          this.domainDrafts.update((drafts) => ({
+            ...drafts,
+            [created.id]: { labelFr: created.labelFr, labelEn: created.labelEn || '' },
+          }));
+          this.updateForm('domainId', created.id);
+          this.savingNewDomain.set(false);
+          this.newDomainLabelFr.set('');
+          this.newDomainLabelEn.set('');
+          this.toast.success(`Domaine « ${created.labelFr} » ajouté.`);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.savingNewDomain.set(false);
+          this.toast.error(extractApiErrorMessage(err, "Erreur lors de l'ajout du domaine."));
+        },
+      });
   }
 
   onStatusChange(published: boolean): void {
@@ -159,11 +282,23 @@ export class JobFormComponent {
     return this.submitAttempted() && !this.form().deadline.trim();
   }
 
+  get domainMissing(): boolean {
+    return this.submitAttempted() && !this.form().domainId;
+  }
+
+  get domainIdStr(): string {
+    return this.form().domainId ? String(this.form().domainId) : '';
+  }
+
+  get selectedDomainLabel(): string {
+    return this.domains().find((d) => d.id === this.form().domainId)?.labelFr ?? '—';
+  }
+
   submitForm(): void {
     this.submitAttempted.set(true);
     const f = this.form();
-    if (!f.titleFr.trim() || !f.deadline.trim()) {
-      this.formError.set("Le titre (FR) et la date de clôture sont obligatoires.");
+    if (!f.titleFr.trim() || !f.deadline.trim() || !f.domainId) {
+      this.formError.set('Le titre (FR), le domaine et la date de clôture sont obligatoires.');
       return;
     }
     this.formError.set(null);
@@ -183,8 +318,8 @@ export class JobFormComponent {
         this.formError.set(
           extractApiErrorMessage(
             err,
-            "Erreur lors de l'enregistrement : l'API backend correspondante n'existe pas encore."
-          )
+            "Erreur lors de l'enregistrement : l'API backend correspondante n'existe pas encore.",
+          ),
         );
       },
     });
