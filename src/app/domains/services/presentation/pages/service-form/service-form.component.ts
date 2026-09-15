@@ -19,7 +19,6 @@ import {
   emptyProcessStep,
   emptyServiceForm,
   serviceStatusLabel,
-  slugify,
 } from '../../../domain/entities/service.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
@@ -56,10 +55,11 @@ export class ServiceFormComponent {
   saving = signal(false);
   formError = signal<string | null>(null);
   submitAttempted = signal(false);
-  slugTouched = signal(this.isEdit);
   uploadingField = signal<'image' | 'heroImage' | 'gallery' | null>(null);
 
   form = signal<ServiceUpsertRequest>(emptyServiceForm());
+  // Généré par le backend à la création, affiché ici en lecture seule (voir service.entity.ts).
+  currentSlug = signal<string | null>(null);
 
   statusLabel = serviceStatusLabel;
 
@@ -81,8 +81,9 @@ export class ServiceFormComponent {
     this.loadError.set(null);
     this.serviceApi.getById(this.serviceId!).subscribe({
       next: (service) => {
-        const { id, updatedAt, ...rest } = service;
+        const { id, updatedAt, slug, ...rest } = service;
         this.form.set(rest);
+        this.currentSlug.set(slug);
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -104,18 +105,6 @@ export class ServiceFormComponent {
 
   updateForm<K extends keyof ServiceUpsertRequest>(field: K, value: ServiceUpsertRequest[K]): void {
     this.form.update((f) => ({ ...f, [field]: value }));
-  }
-
-  onTitleFrChange(value: string): void {
-    this.updateForm('titleFr', value);
-    if (!this.slugTouched()) {
-      this.updateForm('slug', slugify(value));
-    }
-  }
-
-  onSlugChange(value: string): void {
-    this.slugTouched.set(true);
-    this.updateForm('slug', value);
   }
 
   onStatusChange(published: boolean): void {
@@ -207,10 +196,6 @@ export class ServiceFormComponent {
     return this.submitAttempted() && !this.form().titleFr.trim();
   }
 
-  get slugMissing(): boolean {
-    return this.submitAttempted() && !this.form().slug.trim();
-  }
-
   get leadFrMissing(): boolean {
     return this.submitAttempted() && !this.form().leadFr.trim();
   }
@@ -218,14 +203,14 @@ export class ServiceFormComponent {
   submitForm(): void {
     this.submitAttempted.set(true);
     const f = this.form();
-    if (!f.titleFr.trim() || !f.slug.trim() || !f.leadFr.trim()) {
-      this.formError.set('Le titre (FR), le slug et le texte de présentation (FR) sont obligatoires.');
+    if (!f.titleFr.trim() || !f.leadFr.trim()) {
+      this.formError.set('Le titre (FR) et le texte de présentation (FR) sont obligatoires.');
       return;
     }
     this.formError.set(null);
     this.saving.set(true);
 
-    const payload: ServiceUpsertRequest = { ...f, slug: slugify(f.slug) };
+    const payload: ServiceUpsertRequest = { ...f };
     const id = this.serviceId;
     const request$ = id ? this.serviceApi.update(id, payload) : this.serviceApi.create(payload);
 

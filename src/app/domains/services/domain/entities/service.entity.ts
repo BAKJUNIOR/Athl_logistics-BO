@@ -42,20 +42,13 @@ export interface Service {
   updatedAt: string;
 }
 
-export type ServiceUpsertRequest = Omit<Service, 'id' | 'updatedAt'>;
+// Le slug est généré une seule fois par le backend à la création (voir Athl_logistics-backend,
+// ServiceOfferingServiceImpl) et reste ensuite immuable : le BO ne l'édite jamais, il l'affiche
+// seulement (liste, aperçu). C'est pourquoi il est exclu du payload créer/modifier.
+export type ServiceUpsertRequest = Omit<Service, 'id' | 'slug' | 'updatedAt'>;
 
 export function serviceStatusLabel(status: ServiceStatus): string {
   return status === 'published' ? 'Publié' : 'Brouillon';
-}
-
-export function slugify(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-+|-+$)/g, '');
 }
 
 export function emptyPrestation(): ServicePrestation {
@@ -74,7 +67,6 @@ export function emptyProcessStep(order: number): ServiceProcessStep {
 
 export function emptyServiceForm(): ServiceUpsertRequest {
   return {
-    slug: '',
     number: '01',
     titleFr: '',
     titleEn: '',

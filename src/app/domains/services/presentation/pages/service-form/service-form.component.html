@@ -41,7 +41,7 @@
               <app-label>Titre — FR <span class="text-error-500">*</span></app-label>
               <app-input-field
                 [value]="form().titleFr"
-                (valueChange)="onTitleFrChange($any($event))"
+                (valueChange)="updateForm('titleFr', $any($event))"
                 placeholder="Réalisation de projets de construction"
                 [error]="titleFrMissing"
                 [hint]="titleFrMissing ? 'Le titre en français est requis.' : undefined"
@@ -72,14 +72,14 @@
               />
             </div>
             <div>
-              <app-label>Slug (URL) <span class="text-error-500">*</span></app-label>
-              <app-input-field
-                [value]="form().slug"
-                (valueChange)="onSlugChange($any($event))"
-                placeholder="construction"
-                [error]="slugMissing"
-                [hint]="slugMissing ? 'Le slug est requis.' : 'Auto-généré depuis le titre FR, modifiable.'"
-              />
+              <app-label>Adresse (URL)</app-label>
+              <div class="flex h-11 items-center rounded-lg border border-gray-300 bg-gray-50 px-4 text-sm text-gray-500 dark:border-gray-700 dark:bg-white/[0.02] dark:text-gray-400">
+                @if (currentSlug()) {
+                  /services/{{ currentSlug() }}
+                } @else {
+                  <span class="text-gray-400">Générée automatiquement à la création</span>
+                }
+              </div>
             </div>
             <div>
               <app-label>Numéro affiché</app-label>
