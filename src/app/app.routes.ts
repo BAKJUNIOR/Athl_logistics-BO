@@ -19,6 +19,16 @@ import { SignInComponent } from './domains/auth/presentation/pages/sign-in/sign-
 import { ActivationComponent } from './domains/auth/presentation/pages/activation/activation.component';
 import { CalenderComponent } from './domains/dashboard/presentation/pages/calender/calender.component';
 import { UsersListComponent } from './domains/user/presentation/pages/users-list/users-list.component';
+import { ServicesListComponent } from './domains/services/presentation/pages/services-list/services-list.component';
+import { ServiceFormComponent } from './domains/services/presentation/pages/service-form/service-form.component';
+import { JobsListComponent } from './domains/jobs/presentation/pages/jobs-list/jobs-list.component';
+import { JobFormComponent } from './domains/jobs/presentation/pages/job-form/job-form.component';
+import { QuotesListComponent } from './domains/quotes/presentation/pages/quotes-list/quotes-list.component';
+import { ApplicationsListComponent } from './domains/applications/presentation/pages/applications-list/applications-list.component';
+import { TeamListComponent } from './domains/team/presentation/pages/team-list/team-list.component';
+import { ProjectsListComponent } from './domains/projects/presentation/pages/projects-list/projects-list.component';
+import { HomeStatsPageComponent } from './domains/home-stats/presentation/pages/home-stats-page/home-stats-page.component';
+import { NotificationsPageComponent } from './domains/notifications/presentation/pages/notifications-page/notifications-page.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
@@ -111,6 +121,79 @@ export const routes: Routes = [
         component:UsersListComponent,
         canActivate:[adminGuard],
         title:'Gestion des utilisateurs | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'services',
+        component:ServicesListComponent,
+        canActivate:[adminGuard],
+        title:'Services | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'services/new',
+        component:ServiceFormComponent,
+        canActivate:[adminGuard],
+        title:'Nouveau service | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'services/:id/edit',
+        component:ServiceFormComponent,
+        canActivate:[adminGuard],
+        title:'Modifier le service | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'jobs',
+        component:JobsListComponent,
+        canActivate:[adminGuard],
+        title:'Carrières | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'jobs/new',
+        component:JobFormComponent,
+        canActivate:[adminGuard],
+        title:'Nouvelle offre | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'jobs/:id/edit',
+        component:JobFormComponent,
+        canActivate:[adminGuard],
+        title:'Modifier l\'offre | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'quotes',
+        component:QuotesListComponent,
+        canActivate:[adminGuard],
+        title:'Demandes de devis | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'applications',
+        component:ApplicationsListComponent,
+        canActivate:[adminGuard],
+        title:'Candidatures | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'team',
+        component:TeamListComponent,
+        canActivate:[adminGuard],
+        title:'Équipe | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'projects',
+        component:ProjectsListComponent,
+        canActivate:[adminGuard],
+        title:'Réalisations / Projets | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'home-stats',
+        component:HomeStatsPageComponent,
+        canActivate:[adminGuard],
+        title:'Chiffres clés de l\'accueil | ATHL-HABITAT&LOGISTIC'
+      },
+      // Pas de lien dans le sidebar (demandé) — accessible uniquement via
+      // "Voir toutes les notifications" dans la cloche du header.
+      {
+        path:'notifications',
+        component:NotificationsPageComponent,
+        title:'Notifications | ATHL-HABITAT&LOGISTIC'
       },
     ]
   },

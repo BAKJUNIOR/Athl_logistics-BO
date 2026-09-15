@@ -1,0 +1,111 @@
+import { Service } from '../../domain/entities/service.entity';
+
+/**
+ * Données d'exemple affichées quand l'API `/api/v1/services` n'existe pas encore
+ * (voir services-list.component.ts) — uniquement pour prévisualiser le rendu de la
+ * liste, jamais envoyées au serveur. À retirer une fois le backend branché.
+ */
+export const MOCK_SERVICES: Service[] = [
+  {
+    id: 1,
+    slug: 'construction',
+    number: '01',
+    titleFr: 'Réalisation de projets de construction',
+    titleEn: 'Construction project delivery',
+    shortTitleFr: 'Construction',
+    shortTitleEn: 'Construction',
+    leadFr: "De la conception à la livraison, nous pilotons vos chantiers de A à Z avec des équipes qualifiées et un suivi rigoureux.",
+    leadEn: 'From design to handover, we run your construction sites end-to-end with qualified teams and rigorous follow-up.',
+    image: '',
+    heroImage: '',
+    gallery: [],
+    prestations: [
+      { titleFr: 'Gros œuvre', titleEn: 'Structural work', descriptionFr: 'Fondations, structure et maçonnerie.', descriptionEn: 'Foundations, structure and masonry.' },
+      { titleFr: 'Second œuvre', titleEn: 'Finishing work', descriptionFr: 'Électricité, plomberie, finitions.', descriptionEn: 'Electrical, plumbing, finishing.' },
+      { titleFr: 'Suivi de chantier', titleEn: 'Site supervision', descriptionFr: 'Coordination et reporting hebdomadaire.', descriptionEn: 'Coordination and weekly reporting.' },
+      { titleFr: 'Livraison clé en main', titleEn: 'Turnkey handover', descriptionFr: 'Réception et remise des clés.', descriptionEn: 'Inspection and handover.' },
+    ],
+    process: [
+      { number: '01', titleFr: 'Étude', titleEn: 'Study', descriptionFr: 'Analyse du besoin et faisabilité.', descriptionEn: 'Needs analysis and feasibility.' },
+      { number: '02', titleFr: 'Conception', titleEn: 'Design', descriptionFr: 'Plans et devis détaillés.', descriptionEn: 'Detailed plans and quotes.' },
+      { number: '03', titleFr: 'Construction', titleEn: 'Build', descriptionFr: 'Exécution sur site.', descriptionEn: 'On-site execution.' },
+      { number: '04', titleFr: 'Livraison', titleEn: 'Handover', descriptionFr: 'Contrôle qualité et remise.', descriptionEn: 'Quality check and handover.' },
+    ],
+    status: 'published',
+    updatedAt: '2026-09-10T09:00:00Z',
+  },
+  {
+    id: 2,
+    slug: 'renovation',
+    number: '02',
+    titleFr: 'Rénovation & aménagement',
+    titleEn: 'Renovation & fit-out',
+    shortTitleFr: 'Rénovation',
+    shortTitleEn: 'Renovation',
+    leadFr: 'Nous transformons vos espaces existants — habitation ou bureaux — avec un souci constant de qualité et de délais.',
+    leadEn: 'We transform your existing spaces — homes or offices — with a constant focus on quality and deadlines.',
+    image: '',
+    heroImage: '',
+    gallery: [],
+    prestations: [
+      { titleFr: 'Diagnostic', titleEn: 'Assessment', descriptionFr: "État des lieux et recommandations.", descriptionEn: 'Site survey and recommendations.' },
+      { titleFr: 'Aménagement intérieur', titleEn: 'Interior fit-out', descriptionFr: 'Cloisons, revêtements, agencement.', descriptionEn: 'Partitions, finishes, layout.' },
+    ],
+    process: [
+      { number: '01', titleFr: 'Visite', titleEn: 'Site visit', descriptionFr: 'Évaluation sur place.', descriptionEn: 'On-site evaluation.' },
+      { number: '02', titleFr: 'Travaux', titleEn: 'Works', descriptionFr: 'Réalisation des travaux.', descriptionEn: 'Works execution.' },
+    ],
+    status: 'draft',
+    updatedAt: '2026-09-08T14:30:00Z',
+  },
+  {
+    id: 3,
+    slug: 'mobilite',
+    number: '03',
+    titleFr: 'VTC, mobilité & livraison',
+    titleEn: 'Ride-hailing, mobility & delivery',
+    shortTitleFr: 'Mobilité',
+    shortTitleEn: 'Mobility',
+    leadFr: 'Une flotte de véhicules et de chauffeurs professionnels pour vos déplacements et livraisons en toute sérénité.',
+    leadEn: 'A fleet of vehicles and professional drivers for your travel and deliveries, worry-free.',
+    image: '',
+    heroImage: '',
+    gallery: [],
+    prestations: [
+      { titleFr: 'Transport de personnel', titleEn: 'Staff transport', descriptionFr: 'Navettes et déplacements pro.', descriptionEn: 'Shuttles and business travel.' },
+      { titleFr: 'Livraison express', titleEn: 'Express delivery', descriptionFr: 'Colis et documents en ville.', descriptionEn: 'Parcels and documents in town.' },
+      { titleFr: 'Location avec chauffeur', titleEn: 'Chauffeur rental', descriptionFr: 'Véhicules à la demande.', descriptionEn: 'On-demand vehicles.' },
+    ],
+    process: [
+      { number: '01', titleFr: 'Réservation', titleEn: 'Booking', descriptionFr: 'Demande en ligne ou téléphone.', descriptionEn: 'Online or phone request.' },
+      { number: '02', titleFr: 'Prise en charge', titleEn: 'Pickup', descriptionFr: 'Chauffeur sur place.', descriptionEn: 'Driver on site.' },
+      { number: '03', titleFr: 'Trajet', titleEn: 'Ride', descriptionFr: 'Suivi en temps réel.', descriptionEn: 'Real-time tracking.' },
+    ],
+    status: 'published',
+    updatedAt: '2026-09-12T08:15:00Z',
+  },
+  {
+    id: 4,
+    slug: 'import',
+    number: '04',
+    titleFr: 'Importation de matériaux',
+    titleEn: 'Materials import',
+    shortTitleFr: 'Import',
+    shortTitleEn: 'Import',
+    leadFr: "Nous sourçons et importons vos matériaux de construction avec un contrôle qualité strict et un dédouanement maîtrisé.",
+    leadEn: 'We source and import your construction materials with strict quality control and streamlined customs clearance.',
+    image: '',
+    heroImage: '',
+    gallery: [],
+    prestations: [
+      { titleFr: 'Sourcing', titleEn: 'Sourcing', descriptionFr: 'Recherche fournisseurs fiables.', descriptionEn: 'Reliable supplier sourcing.' },
+      { titleFr: 'Dédouanement', titleEn: 'Customs clearance', descriptionFr: 'Formalités douanières complètes.', descriptionEn: 'Full customs formalities.' },
+    ],
+    process: [
+      { number: '01', titleFr: 'Commande', titleEn: 'Order', descriptionFr: 'Validation du besoin.', descriptionEn: 'Needs validation.' },
+      { number: '02', titleFr: 'Transit', titleEn: 'Transit', descriptionFr: 'Acheminement et suivi.', descriptionEn: 'Shipping and tracking.' },
+    ],
+    status: 'draft',
+    updatedAt: '2026-09-05T11:00:00Z',
+  },
+];

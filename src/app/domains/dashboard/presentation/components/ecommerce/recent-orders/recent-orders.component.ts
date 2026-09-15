@@ -1,95 +1,45 @@
-// import { CommonModule } from '@angular/common';
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-recent-orders',
-//   imports: [CommonModule],
-//   templateUrl: './recent-orders.component.html',
-//   styleUrl: './recent-orders.component.css'
-// })
-// export class RecentOrdersComponent {
-
-// }
-
-
-
 import { Component } from '@angular/core';
-// import { TableComponent } from '../../../../../../shared/ui/table/table.component';
-// import { TableBodyComponent } from '../../../../../../shared/ui/table/table-body.component';
-// import { TableCellComponent } from '../../../../../../shared/ui/table/table-cell.component';
-// import { TableHeaderComponent } from '../../../../../../shared/ui/table/table-header.component';
-// import { TableRowComponent } from '../../../../../../shared/ui/table/table-row.component';
+import { RouterModule } from '@angular/router';
 import { BadgeComponent } from '../../../../../../shared/ui/badge/badge.component';
+import { SafeHtmlPipe } from '../../../../../../shared/pipe/safe-html.pipe';
 
-interface Product {
-  id: number;
+type KpiStatus = 'action' | 'ok';
+
+interface Kpi {
   name: string;
-  variants: string;
-  category: string;
-  price: string;
-  image: string;
-  status: 'Livré' | 'En attente' | 'Annulé';
+  section: string;
+  value: string;
+  status: KpiStatus;
+  statusLabel: string;
+  icon: string;
+  path: string;
 }
+
+const mailIcon = `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 6l9 7 9-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const fileIcon = `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const wrenchIcon = `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const briefcaseIcon = `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 7h-3V5a2 2 0 00-2-2H9a2 2 0 00-2 2v2H4a1 1 0 00-1 1v11a2 2 0 002 2h14a2 2 0 002-2V8a1 1 0 00-1-1zM9 5h6v2H9V5zm11 14a1 1 0 01-1 1H5a1 1 0 01-1-1V9h16v10zM9 13h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const teamIcon = `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+const usersIcon = `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 @Component({
   selector: 'app-recent-orders',
-  imports: [
-    BadgeComponent
-],
-  templateUrl: './recent-orders.component.html'
+  imports: [BadgeComponent, RouterModule, SafeHtmlPipe],
+  templateUrl: './recent-orders.component.html',
 })
 export class RecentOrdersComponent {
-  tableData: Product[] = [
-    {
-      id: 1,
-      name: "MacBook Pro 13”",
-      variants: "2 variantes",
-      category: "Ordinateur portable",
-      price: "2399,00 $",
-      status: "Livré",
-      image: "/images/product/product-01.jpg",
-    },
-    {
-      id: 2,
-      name: "Apple Watch Ultra",
-      variants: "1 variante",
-      category: "Montre",
-      price: "879,00 $",
-      status: "En attente",
-      image: "/images/product/product-02.jpg",
-    },
-    {
-      id: 3,
-      name: "iPhone 15 Pro Max",
-      variants: "2 variantes",
-      category: "Smartphone",
-      price: "1869,00 $",
-      status: "Livré",
-      image: "/images/product/product-03.jpg",
-    },
-    {
-      id: 4,
-      name: "iPad Pro 3rd Gen",
-      variants: "2 variantes",
-      category: "Électronique",
-      price: "1699,00 $",
-      status: "Annulé",
-      image: "/images/product/product-04.jpg",
-    },
-    {
-      id: 5,
-      name: "AirPods Pro 2nd Gen",
-      variants: "1 variante",
-      category: "Accessoires",
-      price: "240,00 $",
-      status: "Livré",
-      image: "/images/product/product-05.jpg",
-    },
+  // Chiffres d'exemple en attendant que ces sections soient alimentées par de vraies
+  // données (voir domains/quotes, applications, services, jobs, team, user).
+  kpis: Kpi[] = [
+    { name: 'Demandes de devis', section: 'Demandes reçues', value: '6 nouvelles', status: 'action', statusLabel: 'À traiter', icon: mailIcon, path: '/quotes' },
+    { name: 'Candidatures', section: 'Demandes reçues', value: '4 nouvelles', status: 'action', statusLabel: 'À traiter', icon: fileIcon, path: '/applications' },
+    { name: 'Services', section: 'Contenu du site', value: '2 brouillons', status: 'action', statusLabel: 'À publier', icon: wrenchIcon, path: '/services' },
+    { name: "Offres d'emploi", section: 'Carrières', value: '3 actives', status: 'ok', statusLabel: 'À jour', icon: briefcaseIcon, path: '/jobs' },
+    { name: 'Équipe', section: 'Contenu du site', value: '3 membres', status: 'ok', statusLabel: 'À jour', icon: teamIcon, path: '/team' },
+    { name: 'Utilisateurs du BO', section: 'Administration', value: '5 actifs', status: 'ok', statusLabel: 'À jour', icon: usersIcon, path: '/users' },
   ];
 
-  getBadgeColor(status: string): 'success' | 'warning' | 'error' {
-    if (status === 'Livré') return 'success';
-    if (status === 'En attente') return 'warning';
-    return 'error';
+  badgeColor(status: KpiStatus): 'warning' | 'success' {
+    return status === 'action' ? 'warning' : 'success';
   }
 }

@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PageBreadcrumbComponent } from '../../../../dashboard/presentation/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ComponentCardComponent } from '../../../../dashboard/presentation/components/common/component-card/component-card.component';
@@ -30,6 +31,7 @@ interface ConfirmState {
   selector: 'app-users-list',
   standalone: true,
   imports: [
+    CommonModule,
     PageBreadcrumbComponent,
     ComponentCardComponent,
     BadgeComponent,
@@ -54,6 +56,10 @@ export class UsersListComponent {
   search = signal('');
   roleFilter = signal<'' | RoleName>('');
   statusFilter = signal<'' | 'active' | 'inactive'>('');
+  filtersOpen = signal(false);
+  // Nombre de filtres actifs à la fois — le badge sur le bouton "Filtrer" ne s'affiche
+  // qu'à partir de 2 (un seul filtre actif se voit déjà à la couleur du bouton).
+  readonly activeFilterCount = computed(() => [this.roleFilter(), this.statusFilter()].filter(Boolean).length);
 
   readonly roleOptions: Option[] = [
     { value: 'ADMIN', label: 'Administrateur' },
@@ -96,7 +102,7 @@ export class UsersListComponent {
       total: list.length,
       active: list.filter((u) => u.active).length,
       inactive: list.filter((u) => !u.active).length,
-      admins: list.filter((u) => u.roles?.some((r) => r.roleName === 'ADMIN')).length,
+      admins: list.filter((u) => u.roles?.some((r) => r.roleName === 'SUPER_ADMIN')).length,
     };
   });
 
@@ -154,6 +160,10 @@ export class UsersListComponent {
 
   closeMenu(): void {
     this.openMenuId.set(null);
+  }
+
+  toggleFilters(): void {
+    this.filtersOpen.update((v) => !v);
   }
 
   // ── Création ──

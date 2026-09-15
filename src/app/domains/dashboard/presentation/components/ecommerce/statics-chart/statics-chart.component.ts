@@ -44,14 +44,15 @@ export class StatisticsChartComponent implements AfterViewInit {
       },
     });
   }
+  // Chiffres d'exemple en attendant un endpoint d'agrégation côté backend.
   public series: ApexAxisChartSeries = [
     {
-      name: 'Sales',
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+      name: 'Demandes de devis',
+      data: [10, 14, 12, 16, 15, 13, 18, 20, 22, 24, 27, 24],
     },
     {
-      name: 'Revenue',
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
+      name: 'Candidatures',
+      data: [6, 8, 7, 9, 11, 10, 12, 13, 15, 17, 19, 17],
     },
   ];
 
@@ -99,18 +100,18 @@ export class StatisticsChartComponent implements AfterViewInit {
   public xaxis: ApexXAxis = {
     type: 'category',
     categories: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
+      'Janv',
+      'Févr',
+      'Mars',
+      'Avr',
+      'Mai',
+      'Juin',
+      'Juil',
+      'Août',
+      'Sept',
       'Oct',
       'Nov',
-      'Dec',
+      'Déc',
     ],
     axisBorder: { show: false },
     axisTicks: { show: false },
@@ -131,7 +132,7 @@ export class StatisticsChartComponent implements AfterViewInit {
   };
 
   public legend: ApexLegend = {
-    show: false,
+    show: true,
     position: 'top',
     horizontalAlign: 'left',
   };

@@ -1,9 +1,12 @@
 <div
   class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
   <div class="flex items-center justify-between">
-    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-      Ventes mensuelles
-    </h3>
+    <div>
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+        Demandes reçues
+      </h3>
+      <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">Répartition de ce mois-ci</p>
+    </div>
     <div class="relative inline-block">
       <button class="dropdown-toggle" (click)="toggleDropdown()">
         <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -27,11 +30,23 @@
     </div>
   </div>
 
-  <div class="max-w-full overflow-x-auto custom-scrollbar">
-    <div class="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-      <apx-chart [series]="series" [chart]="chart" [xaxis]="xaxis" [plotOptions]="plotOptions" [dataLabels]="dataLabels"
-        [stroke]="stroke" [legend]="legend" [yaxis]="yaxis" [grid]="grid" [fill]="fill" [tooltip]="tooltip"
-        [colors]="colors"></apx-chart>
-    </div>
+  <div class="-mt-2">
+    <apx-chart [series]="series" [chart]="chart" [labels]="labels" [plotOptions]="plotOptions" [dataLabels]="dataLabels"
+      [stroke]="stroke" [legend]="legend" [fill]="fill" [tooltip]="tooltip" [states]="states"
+      [colors]="colors"></apx-chart>
+  </div>
+
+  <div class="flex items-center justify-center gap-6 border-t border-gray-100 pb-5 pt-4 dark:border-white/[0.05]">
+    @for (slice of slices; track slice.label) {
+      <div class="flex items-center gap-2.5">
+        <span class="h-2.5 w-2.5 shrink-0 rounded-full" [style.background-color]="slice.color"></span>
+        <div>
+          <p class="text-theme-xs text-gray-500 dark:text-gray-400">{{ slice.label }}</p>
+          <p class="font-semibold text-gray-800 text-theme-sm dark:text-white/90">
+            {{ slice.value }} <span class="font-normal text-gray-400">· {{ percentage(slice.value) }}%</span>
+          </p>
+        </div>
+      </div>
+    }
   </div>
 </div>
