@@ -27,7 +27,9 @@ import { QuotesListComponent } from './domains/quotes/presentation/pages/quotes-
 import { ApplicationsListComponent } from './domains/applications/presentation/pages/applications-list/applications-list.component';
 import { TeamListComponent } from './domains/team/presentation/pages/team-list/team-list.component';
 import { ProjectsListComponent } from './domains/projects/presentation/pages/projects-list/projects-list.component';
-import { HomeStatsPageComponent } from './domains/home-stats/presentation/pages/home-stats-page/home-stats-page.component';
+import { SiteSettingsPageComponent } from './domains/site-settings/presentation/pages/site-settings-page/site-settings-page.component';
+import { PopupsListComponent } from './domains/popups/presentation/pages/popups-list/popups-list.component';
+import { PopupFormComponent } from './domains/popups/presentation/pages/popup-form/popup-form.component';
 import { NotificationsPageComponent } from './domains/notifications/presentation/pages/notifications-page/notifications-page.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
@@ -183,10 +185,28 @@ export const routes: Routes = [
         title:'Réalisations / Projets | ATHL-HABITAT&LOGISTIC'
       },
       {
-        path:'home-stats',
-        component:HomeStatsPageComponent,
+        path:'site-settings',
+        component:SiteSettingsPageComponent,
         canActivate:[adminGuard],
-        title:'Chiffres clés de l\'accueil | ATHL-HABITAT&LOGISTIC'
+        title:'Paramètres du site | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'popups',
+        component:PopupsListComponent,
+        canActivate:[adminGuard],
+        title:'Popups | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'popups/new',
+        component:PopupFormComponent,
+        canActivate:[adminGuard],
+        title:'Nouvelle popup | ATHL-HABITAT&LOGISTIC'
+      },
+      {
+        path:'popups/:id/edit',
+        component:PopupFormComponent,
+        canActivate:[adminGuard],
+        title:'Modifier la popup | ATHL-HABITAT&LOGISTIC'
       },
       // Pas de lien dans le sidebar (demandé) — accessible uniquement via
       // "Voir toutes les notifications" dans la cloche du header.

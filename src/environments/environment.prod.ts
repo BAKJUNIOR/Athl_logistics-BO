@@ -67,5 +67,17 @@ export const environment = {
       list: 'api/v1/home-stats',
       update: 'api/v1/home-stats',
     },
+    siteContact: {
+      get: 'api/v1/site-settings/contact',
+      update: 'api/v1/site-settings/contact',
+    },
+    popups: {
+      list: 'api/v1/popups',
+      create: 'api/v1/popups',
+      update: (popupId: number | string) => `api/v1/popups/${popupId}`,
+      activate: (popupId: number | string) => `api/v1/popups/${popupId}/activate`,
+      deactivate: (popupId: number | string) => `api/v1/popups/${popupId}/deactivate`,
+      byId: (popupId: number | string) => `api/v1/popups/${popupId}`,
+    },
   },
 };

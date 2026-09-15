@@ -64,6 +64,11 @@ export class AppSidebarComponent {
       path: "/jobs",
     },
     {
+      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      name: "Réalisations / Projets",
+      path: "/projects",
+    },
+    {
       // Regroupées en sous-menu : contenus simples (CRUD léger, pas de page dédiée
       // création/édition) — évite de multiplier les entrées de premier niveau.
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>`,
@@ -75,13 +80,13 @@ export class AppSidebarComponent {
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
         },
         {
-          name: "Réalisations / Projets",
-          path: "/projects",
-          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+          name: "Popups",
+          path: "/popups",
+          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 18v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
         },
         {
-          name: "Chiffres clés de l'accueil",
-          path: "/home-stats",
+          name: 'Paramètres du site',
+          path: '/site-settings',
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
         },
       ],
@@ -108,8 +113,8 @@ export class AppSidebarComponent {
   navGroups: { label: string | null; prefix: string; items: NavItem[] }[] = [
     { label: null, prefix: 'top', items: this.topItems },
     { label: 'Administration', prefix: 'admin', items: this.adminItems },
-    { label: 'Contenu du site vitrine', prefix: 'content', items: this.contentItems },
     { label: 'Demandes reçues', prefix: 'inbox', items: this.inboxItems },
+    { label: 'Contenu du site vitrine', prefix: 'content', items: this.contentItems },
   ];
 
   openSubmenu: string | null | number = null;
