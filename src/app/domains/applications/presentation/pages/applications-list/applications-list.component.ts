@@ -10,7 +10,6 @@ import { DropdownComponent } from '../../../../../shared/ui/dropdown/dropdown.co
 import { DropdownItemComponent } from '../../../../../shared/ui/dropdown/dropdown-item/dropdown-item.component';
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { ApplicationApi } from '../../../infrastructure/api/application.api';
-import { MOCK_APPLICATIONS } from '../../../infrastructure/data/application.mock';
 import { ApplicationStatus, JobApplication, applicationStatusLabel } from '../../../domain/entities/job-application.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
@@ -37,7 +36,7 @@ export class ApplicationsListComponent {
 
   applications = signal<JobApplication[]>([]);
   loading = signal(true);
-  usingMockData = signal(false);
+  error = signal<string | null>(null);
 
   search = signal('');
   statusFilter = signal<'' | ApplicationStatus>('');
@@ -85,15 +84,14 @@ export class ApplicationsListComponent {
 
   loadApplications(): void {
     this.loading.set(true);
-    this.usingMockData.set(false);
+    this.error.set(null);
     this.applicationApi.list().subscribe({
       next: (list) => {
         this.applications.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        this.applications.set(MOCK_APPLICATIONS);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des candidatures.'));
         this.loading.set(false);
       },
     });

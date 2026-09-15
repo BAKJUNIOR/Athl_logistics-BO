@@ -10,7 +10,6 @@ import { DropdownComponent } from '../../../../../shared/ui/dropdown/dropdown.co
 import { DropdownItemComponent } from '../../../../../shared/ui/dropdown/dropdown-item/dropdown-item.component';
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { QuoteApi } from '../../../infrastructure/api/quote.api';
-import { MOCK_QUOTES } from '../../../infrastructure/data/quote.mock';
 import { QuoteRequest, QuoteRequestStatus, quoteStatusLabel } from '../../../domain/entities/quote-request.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
@@ -37,7 +36,7 @@ export class QuotesListComponent {
 
   quotes = signal<QuoteRequest[]>([]);
   loading = signal(true);
-  usingMockData = signal(false);
+  error = signal<string | null>(null);
 
   search = signal('');
   statusFilter = signal<'' | QuoteRequestStatus>('');
@@ -85,15 +84,14 @@ export class QuotesListComponent {
 
   loadQuotes(): void {
     this.loading.set(true);
-    this.usingMockData.set(false);
+    this.error.set(null);
     this.quoteApi.list().subscribe({
       next: (list) => {
         this.quotes.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        this.quotes.set(MOCK_QUOTES);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des demandes.'));
         this.loading.set(false);
       },
     });

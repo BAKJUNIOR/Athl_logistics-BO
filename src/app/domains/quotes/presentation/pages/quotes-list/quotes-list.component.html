@@ -90,8 +90,16 @@
     </div>
   }
 
+  <!-- Erreur -->
+  @if (!loading() && error()) {
+    <div class="flex flex-col items-center gap-3 py-16 text-center">
+      <span class="max-w-md text-sm text-gray-500 dark:text-gray-400">{{ error() }}</span>
+      <app-button variant="outline" size="sm" (btnClick)="loadQuotes()">Réessayer</app-button>
+    </div>
+  }
+
   <!-- Tableau -->
-  @if (!loading()) {
+  @if (!loading() && !error()) {
     <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-white/[0.05]">
       <div class="max-w-full overflow-x-auto">
         <table class="min-w-full">
