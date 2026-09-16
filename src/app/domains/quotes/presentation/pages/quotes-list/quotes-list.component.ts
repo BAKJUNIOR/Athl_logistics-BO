@@ -13,6 +13,7 @@ import { QuoteApi } from '../../../infrastructure/api/quote.api';
 import { QuoteRequest, QuoteRequestStatus, quoteStatusLabel } from '../../../domain/entities/quote-request.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
+import { fileNameOf, isImageUrl } from '../../../../../core/utils/file-preview.util';
 
 @Component({
   selector: 'app-quotes-list',
@@ -96,6 +97,9 @@ export class QuotesListComponent {
       },
     });
   }
+
+  isImageUrl = isImageUrl;
+  fileNameOf = fileNameOf;
 
   formatDate(iso: string): string {
     try {

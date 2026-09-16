@@ -231,8 +231,21 @@
       }
       <div>
         <dt class="text-gray-400">CV</dt>
-        <dd class="mt-1">
-          <span class="rounded-lg border border-gray-200 px-2.5 py-1 text-xs text-gray-600 dark:border-gray-700 dark:text-gray-300">{{ d.cvUrl || '—' }}</span>
+        <dd class="mt-2">
+          @if (d.cvUrl) {
+            @if (isImageUrl(d.cvUrl)) {
+              <a [href]="d.cvUrl" target="_blank" rel="noopener" class="block h-20 w-20 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                <img [src]="d.cvUrl" [alt]="fileNameOf(d.cvUrl)" class="h-full w-full object-cover" />
+              </a>
+            } @else {
+              <a [href]="d.cvUrl" target="_blank" rel="noopener" class="flex w-fit items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs text-gray-600 hover:border-brand-300 hover:text-brand-600 dark:border-gray-700 dark:text-gray-300">
+                <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2h6l4 4v10a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" /><path d="M12 2v4h4" /></svg>
+                <span class="max-w-[10rem] truncate">{{ fileNameOf(d.cvUrl) }}</span>
+              </a>
+            }
+          } @else {
+            <span class="text-gray-400">—</span>
+          }
         </dd>
       </div>
     </dl>

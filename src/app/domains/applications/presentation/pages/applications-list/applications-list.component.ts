@@ -13,6 +13,7 @@ import { ApplicationApi } from '../../../infrastructure/api/application.api';
 import { ApplicationStatus, JobApplication, applicationStatusLabel } from '../../../domain/entities/job-application.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
+import { fileNameOf, isImageUrl } from '../../../../../core/utils/file-preview.util';
 
 @Component({
   selector: 'app-applications-list',
@@ -96,6 +97,9 @@ export class ApplicationsListComponent {
       },
     });
   }
+
+  isImageUrl = isImageUrl;
+  fileNameOf = fileNameOf;
 
   formatDate(iso: string): string {
     try {
