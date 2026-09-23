@@ -5,7 +5,6 @@ import { PageBreadcrumbComponent } from '../../../../dashboard/presentation/comp
 import { ComponentCardComponent } from '../../../../dashboard/presentation/components/common/component-card/component-card.component';
 import { ButtonComponent } from '../../../../../shared/ui/button/button.component';
 import { SafeHtmlPipe } from '../../../../../shared/pipe/safe-html.pipe';
-import { MOCK_NOTIFICATIONS } from '../../../infrastructure/data/notification.mock';
 import { AppNotification, NotificationCategory, notificationCategoryLabel } from '../../../domain/entities/notification.entity';
 
 interface NotificationGroup {
@@ -43,7 +42,7 @@ const CATEGORY_STYLE: Record<NotificationCategory, { bg: string; text: string; i
   templateUrl: './notifications-page.component.html',
 })
 export class NotificationsPageComponent {
-  notifications = signal<AppNotification[]>(MOCK_NOTIFICATIONS);
+  notifications = signal<AppNotification[]>([]);
   onlyUnread = signal(false);
 
   categoryLabel = notificationCategoryLabel;

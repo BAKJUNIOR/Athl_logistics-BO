@@ -12,7 +12,6 @@ import { DropdownComponent } from '../../../../../shared/ui/dropdown/dropdown.co
 import { DropdownItemComponent } from '../../../../../shared/ui/dropdown/dropdown-item/dropdown-item.component';
 import { SelectComponent, Option } from '../../../../dashboard/presentation/components/form/select/select.component';
 import { ServiceApi } from '../../../infrastructure/api/service.api';
-import { MOCK_SERVICES } from '../../../infrastructure/data/service.mock';
 import { Service, serviceStatusLabel } from '../../../domain/entities/service.entity';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { extractApiErrorMessage } from '../../../../../core/utils/api-error.util';
@@ -53,8 +52,6 @@ export class ServicesListComponent {
   services = signal<Service[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  // true quand la liste affichée est MOCK_SERVICES (API indisponible) plutôt que de vraies données.
-  usingMockData = signal(false);
 
   search = signal('');
   statusFilter = signal<'' | 'draft' | 'published'>('');
@@ -103,17 +100,13 @@ export class ServicesListComponent {
   loadServices(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.usingMockData.set(false);
     this.serviceApi.list().subscribe({
       next: (list) => {
         this.services.set(list ?? []);
         this.loading.set(false);
       },
-      error: () => {
-        // L'API n'existe pas encore côté backend : on affiche des exemples pour
-        // prévisualiser la liste plutôt qu'un simple message d'erreur.
-        this.services.set(MOCK_SERVICES);
-        this.usingMockData.set(true);
+      error: (err: HttpErrorResponse) => {
+        this.error.set(extractApiErrorMessage(err, 'Erreur lors du chargement des services.'));
         this.loading.set(false);
       },
     });

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "athl_logistics-bo": {
+    "athl_bo": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/athl_logistics-bo",
+            "outputPath": "dist/athl_bo",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "allowedCommonJsDependencies": [
@@ -68,10 +68,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "athl_logistics-bo:build:production"
+              "buildTarget": "athl_bo:build:production"
             },
             "development": {
-              "buildTarget": "athl_logistics-bo:build:development"
+              "buildTarget": "athl_bo:build:development"
             }
           },
           "defaultConfiguration": "development"

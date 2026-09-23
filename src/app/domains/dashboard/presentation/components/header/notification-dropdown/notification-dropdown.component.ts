@@ -4,7 +4,6 @@ import { Router, RouterModule } from '@angular/router';
 import { DropdownComponent } from '../../../../../../shared/ui/dropdown/dropdown.component';
 import { DropdownItemComponent } from '../../../../../../shared/ui/dropdown/dropdown-item/dropdown-item.component';
 import { SafeHtmlPipe } from '../../../../../../shared/pipe/safe-html.pipe';
-import { MOCK_NOTIFICATIONS } from '../../../../../notifications/infrastructure/data/notification.mock';
 import { AppNotification, NotificationCategory } from '../../../../../notifications/domain/entities/notification.entity';
 
 const CATEGORY_STYLE: Record<NotificationCategory, { bg: string; text: string; icon: string }> = {
@@ -40,12 +39,10 @@ export class NotificationDropdownComponent {
 
   isOpen = false;
 
-  // Les 4 plus récentes, mêmes données que la page /notifications (voir domains/notifications).
-  recent: AppNotification[] = [...MOCK_NOTIFICATIONS]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 4);
+  // Pas encore de backend de notifications : la liste reste vide tant qu'aucune source réelle n'est branchée.
+  recent: AppNotification[] = [];
 
-  notifying = this.recent.some((n) => !n.read);
+  notifying = false;
 
   style(category: NotificationCategory) {
     return CATEGORY_STYLE[category];
